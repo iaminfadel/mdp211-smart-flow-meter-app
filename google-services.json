@@ -1,0 +1,171 @@
+{
+  "project_info": {
+    "project_number": "591151168525",
+    "firebase_url": "https://my-iot-sys-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "my-iot-sys",
+    "storage_bucket": "my-iot-sys.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:591151168525:android:6caaa986f11b11b6546944",
+        "android_client_info": {
+          "package_name": "com.amin.flowmeter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "591151168525-9v4h8ib3j0d9g1tmedi1r0g6fisumcau.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.amin.flowmeter",
+            "certificate_hash": "8acb12defda995206fdee6dd3daed25cea516d89"
+          }
+        },
+        {
+          "client_id": "591151168525-r8ntc734q5qmb2vq0q3hnv3u2edbs4qk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3Y0hJCaHdvziD6Xu4JVIgnT7lKeAudHY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "591151168525-619j5je8i5r3h9e4npbhbc8pjl2svvod.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "591151168525-74b6jlcq8p55l4cbpi9jc5da6gb9941s.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.googleAuthTest"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:591151168525:android:74ed5575792f0e83546944",
+        "android_client_info": {
+          "package_name": "com.example.google_auth_test"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "591151168525-r8ntc734q5qmb2vq0q3hnv3u2edbs4qk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3Y0hJCaHdvziD6Xu4JVIgnT7lKeAudHY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "591151168525-619j5je8i5r3h9e4npbhbc8pjl2svvod.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "591151168525-74b6jlcq8p55l4cbpi9jc5da6gb9941s.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.googleAuthTest"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:591151168525:android:7606ef267d62699e546944",
+        "android_client_info": {
+          "package_name": "com.example.second_test"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "591151168525-r8ntc734q5qmb2vq0q3hnv3u2edbs4qk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3Y0hJCaHdvziD6Xu4JVIgnT7lKeAudHY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "591151168525-619j5je8i5r3h9e4npbhbc8pjl2svvod.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "591151168525-74b6jlcq8p55l4cbpi9jc5da6gb9941s.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.googleAuthTest"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:591151168525:android:f44a9701a68902da546944",
+        "android_client_info": {
+          "package_name": "com.iaminfadel.flowmeterexpo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "591151168525-amf424buueueb4jck5sa2ksupla8ecsh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.iaminfadel.flowmeterexpo",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "591151168525-r8ntc734q5qmb2vq0q3hnv3u2edbs4qk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3Y0hJCaHdvziD6Xu4JVIgnT7lKeAudHY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "591151168525-619j5je8i5r3h9e4npbhbc8pjl2svvod.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "591151168525-74b6jlcq8p55l4cbpi9jc5da6gb9941s.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.googleAuthTest"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
