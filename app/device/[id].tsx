@@ -1,9 +1,13 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
-import {styles} from '../../styles';
+
+// Threshold time in milliseconds (e.g., 5 minutes)
+const THRESHOLD = 3;
+// Interval in milliseconds to refresh the status periodically (e.g., 30 seconds)
+const REFRESH_INTERVAL = 1 * 1000;
 
 export default function DeviceDetailScreen() {
   const { id } = useLocalSearchParams();
@@ -23,14 +27,13 @@ export default function DeviceDetailScreen() {
     const temperatureRef = database().ref(`devices/${id}/temperature`);
     const pressureRef = database().ref(`devices/${id}/pressure`);
     const ledStateRef = database().ref(`devices/${id}/led_state`);
-    const connectionRef = database().ref(`users/${userId}/devices/${id}/status`);
     const realtimeRef = database().ref(`devices/${id}/real-time`);
 
     const deviceUnsubscribe = deviceRef.on('value', (snapshot) => {
       setDevice(snapshot.val());
     });
 
-    const realtimeUnsubscribe= realtimeRef.on('value', (snapshot) => {
+    const realtimeUnsubscribe = realtimeRef.on('value', (snapshot) => {
       const data = snapshot.val();
       if (data) {
         setCurrentFlowrate(data.flowrate);
@@ -43,20 +46,53 @@ export default function DeviceDetailScreen() {
       setLedState(snapshot.val());
     });
 
-    const connectionStateUnsubscribe = connectionRef.on('value', (snapshot) => {
-      setConnectionState(snapshot.val() ? 'Online' : 'Offline');
-    });
-
     return () => {
       deviceRef.off('value', deviceUnsubscribe);
       ledStateRef.off('value', ledStateUnsubscribe);
-      connectionRef.off('value', connectionStateUnsubscribe);
       realtimeRef.off('value', realtimeUnsubscribe);
     };
-  });
+  }, [id]);
+
+  // Periodic check for connection state using timestamp
+  useEffect(() => {
+    const userId = auth().currentUser?.uid;
+    if (!userId) return;
+
+    const realtimeRef = database().ref(`devices/${id}/real-time/timestamp`);
+
+    const fetchConnectionStatus = async () => {
+      const snapshot = await realtimeRef.once('value');
+      const timestamp = snapshot.val();
+
+      if (timestamp) {
+        const currentTime = parseInt(Date.now() / 1000); // Get current time in seconds
+        const timeDifference = currentTime - timestamp;
+
+        // Check if the difference exceeds the threshold
+        if (timeDifference > THRESHOLD) {
+          setConnectionState('Offline');
+        } else {
+          setConnectionState('Online');
+        }
+      } else {
+        setConnectionState('Offline');
+      }
+    };
+
+    // Fetch connection state on load
+    fetchConnectionStatus();
+
+    // Set interval to periodically fetch the connection state
+    const intervalId = setInterval(() => {
+      fetchConnectionStatus();
+    }, REFRESH_INTERVAL);
+
+    // Cleanup the interval on component unmount
+    return () => clearInterval(intervalId);
+  }, [id]);
 
   const toggleLedState = useCallback(() => {
-    const ledStateRef = database().ref(`devices/${ id }/led_state`);
+    const ledStateRef = database().ref(`devices/${id}/led_state`);
     ledStateRef.set(!ledState);
   }, [id, ledState]);
 
@@ -69,9 +105,9 @@ export default function DeviceDetailScreen() {
       <View style={styles.header}>
         <View>
           <Text style={styles.title}>{device.name}</Text>
-          <Text style={styles.subtitle}>{device.location}</Text>
+          <Text style={styles.deviceLocation}>{device.location}</Text>
         </View>
-        <View style={[styles.connectionIndicator, { backgroundColor: connectionState === 'Online' ? '#4CAF50' : '#F44336' }]}>
+        <View style={[styles.statusIndicator, { backgroundColor: connectionState === 'Online' ? '#4CAF50' : '#F44336' }]}>
           <Text style={styles.connectionText}>{connectionState}</Text>
         </View>
       </View>
@@ -79,19 +115,24 @@ export default function DeviceDetailScreen() {
       <View style={styles.currentReadings}>
         <View style={styles.readingBox}>
           <Text style={styles.mainReadingTitle}>Flowrate</Text>
-          <Text style={styles.mainReadingValue}>{currentFlowrate !== null ? `${ currentFlowrate?.toFixed(1) } kg / s` : 'N/A'}</Text>
+          <Text style={styles.mainReadingValue}>
+            {(currentFlowrate !== null && connectionState === 'Online') ? `${currentFlowrate?.toFixed(1)} kg / s` : 'N/A'}
+          </Text>
         </View>
       </View>
 
       <View style={styles.currentReadings}>
-
         <View style={styles.readingBox}>
           <Text style={styles.readingTitle}>Temperature</Text>
-          <Text style={styles.readingValue}>{currentTemperature !== null ? `${ currentTemperature?.toFixed(1) }°C` : 'N/A'}</Text>
+          <Text style={styles.readingValue}>
+            {(currentTemperature !== null && connectionState === 'Online') ? `${currentTemperature?.toFixed(1)}°C` : 'N/A'}
+          </Text>
         </View>
         <View style={styles.readingBox}>
           <Text style={styles.readingTitle}>Pressure</Text>
-          <Text style={styles.readingValue}>{currentPressure !== null ? `${ currentPressure?.toFixed(1) } KPa` : 'N/A'}</Text>
+          <Text style={styles.readingValue}>
+            {(currentPressure !== null && connectionState === 'Online') ? `${currentPressure?.toFixed(1)} KPa` : 'N/A'}
+          </Text>
         </View>
       </View>
 
@@ -104,3 +145,98 @@ export default function DeviceDetailScreen() {
     </ScrollView>
   );
 }
+
+// Local styles
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#00296B',
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  title: {
+    fontSize: 36,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  deviceLocation: {
+    fontSize: 20,
+    color: '#eee',
+  },
+  statusIndicator: {
+    width: 50,
+    height: 25,
+    borderRadius: 6,
+    alignItems: 'center',
+    justifyContent:'center'
+  },
+  connectionText: {
+    fontSize: 14,
+    color: '#fff',
+  },
+  currentReadings: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  readingBox: {
+    flex: 1,
+    backgroundColor: '#00509D',
+    borderRadius: 10,
+    padding: 15,
+    marginHorizontal: 5,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 5,
+  },
+  mainReadingTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  mainReadingValue: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginTop: 10,
+  },
+  readingTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  readingValue: {
+    fontSize: 20,
+    color: '#fff',
+    marginTop: 5,
+  },
+  ledContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 30,
+  },
+  ledText: {
+    fontSize: 18,
+    color: '#fff',
+  },
+  ledButton: {
+    backgroundColor: '#fff',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+  },
+  ledButtonText: {
+    color: '#00296B',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+});
