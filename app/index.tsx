@@ -6,11 +6,12 @@ import database from '@react-native-firebase/database';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MotiView } from 'moti';
 import { Easing } from 'react-native-reanimated';
+import { UserCircle } from 'lucide-react-native'; // Add this import
 
 const { width } = Dimensions.get('window');
 
 // Threshold time in seconds
-const THRESHOLD = 5;
+const THRESHOLD = 10;
 // Interval in milliseconds to refresh the status periodically 
 const REFRESH_INTERVAL = 5 * 1000;
 
@@ -71,7 +72,8 @@ export default function DeviceListScreen() {
 
       // Compare timestamp with current time
       const currentTime = parseInt(Date.now() / 1000);
-      return timestamp && (currentTime - timestamp) < THRESHOLD;
+      // console.log(currentTime - timestamp);
+      return timestamp && (currentTime - timestamp) <= THRESHOLD;
     } catch (error) {
       console.error('Error fetching device status:', error);
       return false;
@@ -117,7 +119,14 @@ export default function DeviceListScreen() {
       end={{ x: 1, y: 1 }}
       style={styles.container}
     >
-      <Text style={styles.title}>Your Devices</Text>
+      <View style={styles.header}>
+        <Text style={styles.title}>Your Devices</Text>
+        <Link href="/profile" asChild>
+        <TouchableOpacity style={styles.profileButton}>
+          <UserCircle size={32} color="#ffffff" />
+        </TouchableOpacity>
+        </Link>
+      </View>
 
       <FlatList
         data={devices}
@@ -210,5 +219,15 @@ const styles = StyleSheet.create({
     color: '#00296b',
     fontWeight: 'bold',
     fontSize: 18,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 10,
+    marginBottom: 20,
+  },
+  profileButton: {
+    padding: 8,
   },
 });

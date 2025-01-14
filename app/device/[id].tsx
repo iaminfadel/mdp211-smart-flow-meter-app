@@ -3,9 +3,10 @@ import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-nati
 import { useLocalSearchParams } from 'expo-router';
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
+import MeasurementGraph from './MeasurementGraph';  // Adjust path as needed
 
 // Threshold time in milliseconds (e.g., 5 minutes)
-const THRESHOLD = 3;
+const THRESHOLD = 10;
 // Interval in milliseconds to refresh the status periodically (e.g., 30 seconds)
 const REFRESH_INTERVAL = 1 * 1000;
 
@@ -136,12 +137,8 @@ export default function DeviceDetailScreen() {
         </View>
       </View>
 
-      <View style={styles.ledContainer}>
-        <Text style={styles.ledText}>LED State: {ledState ? 'ON' : 'OFF'}</Text>
-        <TouchableOpacity style={styles.ledButton} onPress={toggleLedState}>
-          <Text style={styles.ledButtonText}>Toggle LED</Text>
-        </TouchableOpacity>
-      </View>
+      <MeasurementGraph deviceId={id} />
+
     </ScrollView>
   );
 }
@@ -217,26 +214,5 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#fff',
     marginTop: 5,
-  },
-  ledContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 30,
-  },
-  ledText: {
-    fontSize: 18,
-    color: '#fff',
-  },
-  ledButton: {
-    backgroundColor: '#fff',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-  },
-  ledButtonText: {
-    color: '#00296B',
-    fontSize: 16,
-    fontWeight: 'bold',
   },
 });
